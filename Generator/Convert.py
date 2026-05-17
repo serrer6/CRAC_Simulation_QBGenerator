@@ -35,9 +35,9 @@ class FConvent:
     def DictSaveToFile(outfile,dict,type):
         with open(outfile,"w",encoding="utf-8") as OutputFile:
             if type == "json":
-                OutputFile.write(json.dumps(dict,ensure_ascii=False))
+                OutputFile.write(json.dumps(dict,ensure_ascii=False,indent=4))
             elif type == "bin":
-                jsonstr = json.dumps(dict,ensure_ascii=False)
+                jsonstr = json.dumps(dict,ensure_ascii=False,indent=4)
                 OutputFile.write(base64.b64encode(jsonstr.encode()).decode())
 
     #垃圾回收
@@ -56,3 +56,4 @@ class BinConvent:
             self.QB_Object.add("type",type(**tp))
         for tm in BinDict["TypeMapping"]:
             self.QB_Object.add("mapping",typemapping(**tm))
+    

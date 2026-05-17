@@ -1,6 +1,8 @@
 import colorama
 import time
 from Generator.Convert import FConvent,BinConvent
+from Generator.Asy import QB_Asy
+from Generator.Que_Object import Kind,Que,type,typemapping
 from colorama import Fore,Back
 import tui.FilePicker as FilePicker
 import npyscreen
@@ -36,9 +38,15 @@ if __name__ == '__main__':
     OutPutHeader("CopyRight BG4LGX-SourCheese GPL3")
     time.sleep(1.5)
 
-    F = FConvent()
-    F.LoadJSONToMem("G:\TEST\TEST.bin")
-    ddd = BinConvent(F.Objects)
-    FConvent.DictSaveToFile("G:\TEST\TEST2.bin",ddd.QB_Object.Export(),"bin")
+    #F = FConvent()
+    #F.LoadJSONToMem("G:\TEST\TEST.bin")
+    #ddd = BinConvent(F.Objects)
+    QBASY = QB_Asy(version="V3.2.2.2")
+    QBASY.add("kind",Kind())
+    QBASY.add("kind",Kind(ID=2))
+    QBASY.add("kind",Kind(ID=3))
+    QBASY.AddQuestionToQB(Que())
+    QBASY.AddQuestionToQB(Que(QuestionCode="QB0002",ID=2))
+    FConvent.DictSaveToFile("G:\TEST\TEST2.bin",QBASY.Export(),"bin")
     #TA = Main()
     #TA.run()
