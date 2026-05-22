@@ -1,21 +1,25 @@
 class Kind:
-    def __init__(self,Version="v1.0.0.0",ID=1,CutOffScores=25,ExamDuration=40,QuestionAmount=30,KindName='A'):
+    def __init__(self,Version="v1.0.0.0",ID=1,KindName:str | None=None,CutOffScores=25,ExamDuration=40,QuestionAmount=30):
         self.Version=Version
         self.ID=ID
-        if(ID==1):
-            self.KindName='A'
-        elif(ID==2):
-            self.KindName='B'
-        elif(ID==3):
-            self.KindName='C'
+        if not KindName:
+            if(ID==1):
+                self.KindName='A'
+            elif(ID==2):
+                self.KindName='B'
+            elif(ID==3):
+                self.KindName='C'
+            else:
+                raise Exception("Invalid level!", ID)
         else:
-            raise Exception("Invalid level!", kd)
+            self.KindName = KindName
         self.CutOffScores=CutOffScores
         self.QuestionAmount=QuestionAmount
         self.ExamDuration=ExamDuration
+        self.__type__ = "kind"
 
 class Que:
-    def __init__(self,ID=0,InsertDt="1999-01-01 00:00:00",IsDelete=0,Option1="NULL",Option2="NULL",Option3="NULL",Option4="NULL",isMuit=0,Question="NULL",Answer=['A'],QuestionCode="QB0001",QuestionPic="",Remark="",UpdateDt=""):
+    def __init__(self,ID=1,InsertDt="1999-01-01 00:00:00",IsDelete=0,Option1="NULL",Option2="NULL",Option3="NULL",Option4="NULL",isMuit=0,Question="NULL",Answer=['A'],QuestionCode="QB0001",QuestionPic="",Remark="",UpdateDt=""):
         self.ID=ID
         self.InsertDt=InsertDt
         self.IsDelete=IsDelete
@@ -30,6 +34,7 @@ class Que:
         self.UpdateDt=UpdateDt
         self.isMuit = isMuit
         self.Answer = Answer
+        self.__type__ = "question"
 
     def LoadFromDict(self,dict):
         if "Portable" in dict:
@@ -38,19 +43,21 @@ class Que:
 
 
 class type:
-    def __init__(self,ID=0,InsertDt="1999-01-01 00:00:00",IsDelete=0,KindID=1,TypeName="NULL",UpdateDt=""):
+    def __init__(self,ID=1,InsertDt="1999-01-01 00:00:00",IsDelete=0,KindID=1,TypeName="NULL",UpdateDt=""):
         self.ID=ID
         self.InsertDt=InsertDt
         self.IsDelete=IsDelete
         self.KindID=KindID
         self.TypeName=TypeName
         self.UpdateDt=UpdateDt
+        self.__type__ = "type"
 
 class typemapping:
-    def __init__(self,ID=0,InsertDt="1999-01-01 00:00:00",IsDelete=0,TypeID=0,QuestionID=0,UpdateDt=""):
+    def __init__(self,ID=1,InsertDt="1999-01-01 00:00:00",IsDelete=0,TypeID=0,QuestionID=0,UpdateDt=""):
         self.ID=ID
         self.InsertDt=InsertDt
         self.IsDelete=IsDelete
         self.TypeID=TypeID
         self.QuestionID=QuestionID
         self.UpdateDt=UpdateDt
+        self.__type__ = "typemapping"

@@ -2,11 +2,10 @@ import npyscreen
 import sys
 class _FileSelecterFrom(npyscreen.ActionForm):
     def create(self):
-        self.name="File..."
-        self.btn_Menu = self.add(npyscreen.TitleSelectOne,name="Please Select...",
-                                        values=["Open CRAC QB  (*.bin)","Open Portable file (*.zip)"])
+        self.add(npyscreen.FixedText,name="Open")
+        self.add(npyscreen.Button,name="Open Simulation QB File(*.bin)")
+        self.add(npyscreen.Button,name="Open Simulation QB File(*.bin)")
     def on_ok(self):
-        
-        print(self.btn_Menu.get_selected_objects())
+        self.parentApp.switchFormPrevious()
     def on_cancel(self):
         self.parentApp.switchFormPrevious()
