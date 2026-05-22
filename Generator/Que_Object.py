@@ -16,6 +16,7 @@ class Kind:
         self.CutOffScores=CutOffScores
         self.QuestionAmount=QuestionAmount
         self.ExamDuration=ExamDuration
+        self.__type__ = "kind"
 
 class Que:
     def __init__(self,ID=1,InsertDt="1999-01-01 00:00:00",IsDelete=0,Option1="NULL",Option2="NULL",Option3="NULL",Option4="NULL",isMuit=0,Question="NULL",Answer=['A'],QuestionCode="QB0001",QuestionPic="",Remark="",UpdateDt=""):
@@ -33,6 +34,7 @@ class Que:
         self.UpdateDt=UpdateDt
         self.isMuit = isMuit
         self.Answer = Answer
+        self.__type__ = "question"
 
     def LoadFromDict(self,dict):
         if "Portable" in dict:
@@ -48,6 +50,7 @@ class type:
         self.KindID=KindID
         self.TypeName=TypeName
         self.UpdateDt=UpdateDt
+        self.__type__ = "type"
 
 class typemapping:
     def __init__(self,ID=1,InsertDt="1999-01-01 00:00:00",IsDelete=0,TypeID=0,QuestionID=0,UpdateDt=""):
@@ -57,3 +60,4 @@ class typemapping:
         self.TypeID=TypeID
         self.QuestionID=QuestionID
         self.UpdateDt=UpdateDt
+        self.__type__ = "typemapping"

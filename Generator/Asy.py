@@ -19,34 +19,34 @@ class QB_Asy:
         self.meta_LastTypeID = 0
         self.meta_LastTypeMappinID = 0
 
-    def add(self,name,value):
+    def add(self,value:object):
         #将题目对象载入题库
-        if name == "kind":
+        if value.__type__ == "kind":
             if self.meta_LastKindID < value.ID: self.meta_LastKindID = value.ID
             self.Kind.append(value)
-        elif name == "question":
+        elif value.__type__ == "question":
             if self.meta_LastQuestionID < value.ID: self.meta_LastQuestionID = value.ID
             self.Question.append(value)
             if self.meta_LastTypeID < value.ID: self.meta_LastTypeID = value.ID
-        elif name == "type":
+        elif value.__type__ == "type":
             self.Type.append(value)
             if self.meta_LastTypeMappinID < value.ID: self.meta_LastTypeMappinID = value.ID
-        elif name == "mapping":
+        elif value.__type__ == "typemapping":
             self.TypeMapping.append(value)
         else:
             #返回错误
             raise Exception("Invalid level!", name)
-    def Check(self,name,value):
+    def Check(self,value):
         if(self.checkpass == 1):return value
-        if name == "kind":
+        if value.__type__ == "kind":
             if value["ExamDuration"] > 0 and  value["QuestionAmount"] > value["CutOffScores"]:
                 # and value["QuestionAmount"]<=len(self.Question)
                 return 1
-        elif name == "question":
+        elif value.__type__ == "question":
             pass
-        elif name == "type":
+        elif value.__type__ == "type":
             pass
-        elif name == "mapping":
+        elif value.__type__ == "typemapping":
             pass
         else:
             #返回错误
@@ -58,18 +58,26 @@ class QB_Asy:
         Export_dict["Question"]=[]
         Export_dict["Type"]=[]
         Export_dict["TypeMapping"]=[]
-        for i in self.__dict__["Kind"]:
-            Export_dict["Kind"].append(i.__dict__)
-        for i in self.__dict__["Question"]:
+        self2dict = self.__dict__
+        for i in self2dict["Kind"]:
+            i=i.__dict__
+            del i["__type__"]
+            Export_dict["Kind"].append(i)
+        for i in self2dict["Question"]:
             ExpQuestion = i.__dict__
             if len(ExpQuestion["Answer"]) <= 1 and ExpQuestion["isMuit"] == 0:
                 del ExpQuestion["Answer"]
                 del ExpQuestion["isMuit"]
-                Export_dict["Question"].append(ExpQuestion)
-        for i in self.__dict__["Type"]:
-            Export_dict["Type"].append(i.__dict__)
-        for i in self.__dict__["TypeMapping"]:
-            Export_dict["TypeMapping"].append(i.__dict__)
+            del ExpQuestion["__type__"]
+            Export_dict["Question"].append(ExpQuestion)
+        for i in self2dict["Type"]:
+            i=i.__dict__
+            del i["__type__"]
+            Export_dict["Type"].append(i)
+        for i in self2dict["TypeMapping"]:
+            i=i.__dict__
+            del i["__type__"]
+            Export_dict["TypeMapping"].append(i)
         return Export_dict
     
     def AddQuestionToQB(self,que:Que,kind:Kind | None=None,Type:type | None=None) -> None:
@@ -85,9 +93,9 @@ class QB_Asy:
 
         _typemapping = typemapping(self.meta_LastTypeMappinID+1,InsertDt=time_str,TypeID=_type.ID,QuestionID=que.ID,UpdateDt=time_str)
         self.meta_LastTypeMappinID+=1
-        self.add("question",que)
-        self.add("type",_type)
-        self.add("mapping",_typemapping)
+        self.add(que)
+        self.add(_type)
+        self.add(_typemapping)
 
         
 

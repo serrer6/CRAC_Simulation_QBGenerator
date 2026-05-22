@@ -49,11 +49,11 @@ class BinConvent:
         self.QB_Object = QB_Asy(check_pass=1)
         BinDict = json.loads(obj)
         for que in BinDict["Question"]:
-            self.QB_Object.add("question",Que(**que))
+            self.QB_Object.add(Que(**que))
         for kd in BinDict["Kind"]:
-            self.QB_Object.add("kind",Kind(**kd))
+            self.QB_Object.add(Kind(**kd))
         for tp in BinDict["Type"]:
-            self.QB_Object.add("type",type(**tp))
+            self.QB_Object.add(type(**tp))
         for tm in BinDict["TypeMapping"]:
-            self.QB_Object.add("mapping",typemapping(**tm))
+            self.QB_Object.add(typemapping(**tm))
     
