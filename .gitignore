@@ -4,5 +4,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
+ni_line.py
+tk2.txt
 .vscode/
+temp/

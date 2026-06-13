@@ -2,7 +2,7 @@ import json
 import time
 #from Generator.Convert import FConvent
 from Generator.Que_Object import Kind,Que,type,typemapping
-
+import copy
 class QB_Asy:
     def __init__(self,check_pass=0,version:str | None=None):
         self.Kind = []
@@ -22,15 +22,15 @@ class QB_Asy:
     def add(self,value:object):
         #将题目对象载入题库
         if value.__type__ == "kind":
-            if self.meta_LastKindID < value.ID: self.meta_LastKindID = value.ID
+            #if self.meta_LastKindID < value.ID: self.meta_LastKindID = value.ID
             self.Kind.append(value)
         elif value.__type__ == "question":
-            if self.meta_LastQuestionID < value.ID: self.meta_LastQuestionID = value.ID
+            #if self.meta_LastQuestionID < value.ID: self.meta_LastQuestionID = value.ID
             self.Question.append(value)
-            if self.meta_LastTypeID < value.ID: self.meta_LastTypeID = value.ID
+            #if self.meta_LastTypeID < value.ID: self.meta_LastTypeID = value.ID
         elif value.__type__ == "type":
             self.Type.append(value)
-            if self.meta_LastTypeMappinID < value.ID: self.meta_LastTypeMappinID = value.ID
+            #if self.meta_LastTypeMappinID < value.ID: self.meta_LastTypeMappinID = value.ID
         elif value.__type__ == "typemapping":
             self.TypeMapping.append(value)
         else:
@@ -72,7 +72,7 @@ class QB_Asy:
             Export_dict["Question"].append(ExpQuestion)
         for i in self2dict["Type"]:
             i=i.__dict__
-            del i["__type__"]
+            if "__type__" in i:del i["__type__"]
             Export_dict["Type"].append(i)
         for i in self2dict["TypeMapping"]:
             i=i.__dict__
@@ -81,21 +81,56 @@ class QB_Asy:
         return Export_dict
     
     def AddQuestionToQB(self,que:Que,kind:Kind | None=None,Type:type | None=None) -> None:
-        if not kind: _kind = Kind(self.version)
-        else:_kind = kind
+        temp=0
+        if not kind and (not Type.KindID): _kind = Kind(self.version)
+        else:
+            if kind:
+                 _kind = kind
+            else:
+                _kind = Kind(self.version,ID=Type.KindID)
+
         timestamp = time.time()
         local_time = time.localtime(timestamp)
         time_str = time.strftime("%Y-%m-%d %H:%M:%S", local_time)
-        if not Type:
-            _type = type(ID=self.meta_LastTypeID+1,InsertDt=time_str,KindID=_kind.ID,TypeName="CRACQBG_AUTO")
-            self.meta_LastTypeID += 1
-        else: _type = Type
+        """if not Type:
+            pass
+            #self.meta_LastTypeID += 1
+            #_type = type(ID=self.meta_LastTypeID,InsertDt=time_str,KindID=_kind.ID,TypeName="CRACQBG_AUTO")
+            #self.add(_type)
+        else:"""
+        _type = Type
+        _type.ID=None
 
-        _typemapping = typemapping(self.meta_LastTypeMappinID+1,InsertDt=time_str,TypeID=_type.ID,QuestionID=que.ID,UpdateDt=time_str)
-        self.meta_LastTypeMappinID+=1
+        #检查Type重复性
+        type_check=1
+        for types in self.Type:
+            if types.TypeName == _type.TypeName:
+                type_check = 0
+                _type=types
+                break
+
+        if type_check:
+            temp=1
+            for index in range(_type.KindID,4):
+                _type.ID=None
+                _type.KindID=None
+                
+                self.meta_LastTypeID += 1
+                _type.ID = self.meta_LastTypeID
+                _type.KindID=index
+
+                self.add(copy.deepcopy(_type))
+                temp+=1
+                
         self.add(que)
-        self.add(_type)
-        self.add(_typemapping)
+
+        #创建Mapping
+        for index in range(_type.KindID):
+            self.meta_LastTypeMappinID+=1
+            _typemapping = typemapping(self.meta_LastTypeMappinID,InsertDt=time_str,TypeID=_type.ID-index,QuestionID=que.ID,UpdateDt=time_str)
+            self.add(copy.deepcopy(_typemapping))
+        
+        return
 
         
 
@@ -106,7 +141,7 @@ class QB_Asy:
         self.Obj = Obj
     def load(self):
         #题库转换成字典
-        BinDict = json.loads(self.Obj.Objects)
+Objects        BinDict = json.loads(self.Obj.)
         #载入题库对象
         for kind in BinDict["Kind"]:
 

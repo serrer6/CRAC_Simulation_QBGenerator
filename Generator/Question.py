@@ -4,17 +4,16 @@ import platform
 import os
 import random
 import itertools
-from app import current_path
+from app import current_path,app_local_time
 
 def get_chinese_font(size=32):
-    """自动获取系统中文字体"""
     system = platform.system()
     
     font_paths = {
         'Windows': [
-            "C:/Windows/Fonts/simhei.ttf",    # 黑体
-            "C:/Windows/Fonts/msyh.ttc",      # 微软雅黑
-            "C:/Windows/Fonts/simkai.ttf",    # 楷体
+            "C:/Windows/Fonts/simhei.ttf",
+            "C:/Windows/Fonts/msyh.ttc",
+            "C:/Windows/Fonts/simkai.ttf",
         ],
         'Darwin': [  # macOS
             "/System/Library/Fonts/PingFang.ttc",
@@ -40,6 +39,7 @@ def GetKindId(code: str):
     num_str = part.split("-")[0]
     return int(num_str)
 
+'''AI'''
 def clean_tag(j_text: str) -> str:
     split_chars = ["、", ","]
     for c in split_chars:
@@ -59,8 +59,8 @@ def CreateQueImage(Question : Que) -> Image:
     img.save(path,quality=100, subsampling=0)
     return path
 
-
-def parse_single_question(q_str: str) -> dict:
+'''AI and Human'''
+def parse_single_question(q_str: str,times:str |  None=None) -> dict:
     """
     传入单题完整字符串（自行分割好的单题文本），解析为题目字典
     :param q_str: 单个题目的完整文本字符串
@@ -82,6 +82,14 @@ def parse_single_question(q_str: str) -> dict:
         "QuestionCode":"",
         "Answer": []
     }
+
+    if not times:
+        q_data["InsertDt"] = app_local_time
+        q_data["UpdateDt"] = app_local_time
+    else:
+        q_data["InsertDt"] = times
+        q_data["UpdateDt"] = times
+
     t_data = {
         "KindID":1,
         "TypeName":"",
@@ -94,7 +102,9 @@ def parse_single_question(q_str: str) -> dict:
         elif line.startswith('[P]'):
             t_data["TypeName"] = line.replace("[P]", "")
         elif line.startswith('[I]'):
-            t_data["KindID"] = GetKindId(line.replace("[I]", ""))
+            kid = GetKindId(line.replace("[I]", ""))
+            if kid>3:kid=3
+            t_data["KindID"] = kid
         elif line.startswith('[Q]'):
             q_data["Question"] = line.replace("[Q]", "")
         elif line.startswith('[T]'):
@@ -110,6 +120,7 @@ def parse_single_question(q_str: str) -> dict:
                 q_data["Option3"] = line[3:]
             else:
                 q_data["Option4"] = line[3:]
+
     if len(q_data["Answer"]) > 1:
         q_data["isMuit"]=1
 
@@ -117,6 +128,7 @@ def parse_single_question(q_str: str) -> dict:
 
 
 def generate_three_unique_wrong(correct):
+    '''AI'''
     base = ['A','B','C','D']
     pool = []
     for length in range(2, 5):
@@ -152,6 +164,7 @@ def MuitAnswerGen(Question : Que):
     
     return Question
 
+'''AI'''
 def remove_all_files_with_suffix(filepath, suffixes=('.jpg',)):
     """
     删除指定目录下所有以特定后缀名结尾的文件。
@@ -167,9 +180,11 @@ def remove_all_files_with_suffix(filepath, suffixes=('.jpg',)):
                 if file_path.endswith(suffix):
                     try:
                         os.remove(file_path)
-                        print(f"已删除文件: {file_path}")
+                        #print(f"Delete: {file_path}")
                     except PermissionError:
-                        print(f"没有权限删除文件: {file_path}")
+                        pass
+                        #print(f"chmod error: {file_path}")
                     except Exception as e:
-                        print(f"删除文件时出错: {e}")
+                        pass
+                        #print(f"Error: {e}")
                     break  # 匹配到一个后缀名即可，无需继续检查
