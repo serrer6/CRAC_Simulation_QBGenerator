@@ -3,11 +3,15 @@ import time
 from Generator.Convert import FConvent,BinConvent
 from Generator.Asy import QB_Asy
 from Generator.Que_Object import Kind,Que,type,typemapping
+from Generator.Question import *
 from colorama import Fore,Back
 import tui.FilePicker as FilePicker
 import npyscreen
 from tui._Main_Form import _MainFrom
 from tui.FileMenu import _FileSelecterFrom
+
+import os
+current_path = os.path.dirname(os.path.abspath(__file__))
 #from Generator.Asy import BinFile_Asy
 
 print("""
@@ -27,26 +31,28 @@ import npyscreen
 # 同时也管理着应用的实际形态.
 
 class Main(npyscreen.NPSAppManaged):
-    def onStart(self):
-        self.File1=""
-        self.File2="."
+    #File1="."
+    #File2="."
+    #mode=None
 
+    def onStart(self):
+        self.File1="."
+        self.File2="."
+        self.mode=None
         self.addForm("MAIN", _MainFrom)
         self.addForm("FileSelecter", _FileSelecterFrom)
 
 if __name__ == '__main__':
+    '''print(aaa)
+    CreateQueImage(Que(**aaa))
+    remove_all_files_with_suffix(current_path)
+    bbb = MuitAnswerGen(Que(**aaa))
+    print(bbb.__dict__)
+    remove_all_files_with_suffix(current_path+"\\temp")'''
+
+
     OutPutHeader("CopyRight BG4LGX-SourCheese GPL3")
     time.sleep(1.5)
-
-    #F = FConvent()
-    #F.LoadJSONToMem("G:\TEST\TEST.bin")
-    #ddd = BinConvent(F.Objects)
-    QBASY = QB_Asy(version="V3.2.2.2")
-    QBASY.add(Kind())
-    QBASY.add(Kind(ID=2))
-    QBASY.add(Kind(ID=3))
-    QBASY.AddQuestionToQB(Que())
-    QBASY.AddQuestionToQB(Que(QuestionCode="QB0002",ID=2))
-    FConvent.DictSaveToFile("G:\TEST\TEST2.json",QBASY.Export(),"json")
-    #TA = Main()
-    #TA.run()
+    #FConvent.DictSaveToFile("G:\TEST\TEST2.json",ddd.QB_Object.Export(),"json")
+    TA = Main()
+    TA.run()
