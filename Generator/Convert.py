@@ -56,4 +56,11 @@ class BinConvent:
             self.QB_Object.add(type(**tp))
         for tm in BinDict["TypeMapping"]:
             self.QB_Object.add(typemapping(**tm))
+
+def ConventImgtoBase64(filepath):
+    with open(filepath,"rb") as file:
+        byte_data = file.read()
+    base64_str = base64.b64encode(byte_data).decode()
+    return base64_str
+
     
